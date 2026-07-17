@@ -1,80 +1,159 @@
-# SuperStore Sales Data Analysis
+# 📊 SuperStore Sales & Profitability Analysis
 
-![Data Analysis Banner](https://placehold.co/800x200/000000/FFFFFF?text=SuperStore+Sales+Analysis)
+[![Python](https://img.shields.io/badge/Python-3.11-3776AB?logo=python&logoColor=white)](https://www.python.org/)
+[![Pandas](https://img.shields.io/badge/Pandas-2.x-150458?logo=pandas&logoColor=white)](https://pandas.pydata.org/)
+[![Streamlit](https://img.shields.io/badge/Streamlit-Dashboard-FF4B4B?logo=streamlit&logoColor=white)](https://streamlit.io/)
+[![Plotly](https://img.shields.io/badge/Plotly-Interactive%20Viz-3F4F75?logo=plotly&logoColor=white)](https://plotly.com/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-An in-depth exploratory data analysis (EDA) of the SuperStore dataset. This project dives into sales trends, customer behavior, and product performance to uncover actionable insights and inform business strategy.
+An end-to-end exploratory data analysis of ~9,800 orders from a US retail superstore (2015–2018), going beyond a revenue-only view to find where the business is actually **profitable** — and where it isn't. Includes a Jupyter notebook, a reusable analysis script, and a live interactive Streamlit dashboard.
 
----
-
-## 📊 Project Purpose
-
-The goal of this analysis is to explore the SuperStore dataset to identify key patterns and metrics. By examining various aspects of the sales data, this project aims to answer critical business questions, such as:
-
--   Which product categories and sub-categories are the most profitable?
--   Who are the most valuable customers and what are their buying patterns?
--   Which geographical regions generate the most sales?
--   How do different shipping methods and customer segments impact the business?
--   What are the sales trends over time (yearly, quarterly, and monthly)?
+**[▶ Live dashboard](#-interactive-dashboard)** &nbsp;•&nbsp; **[📓 Notebook](notebooks/SuperStore_Sales_Analysis.ipynb)** &nbsp;•&nbsp; **[📄 One-page summary](reports/Executive_Summary.pdf)**
 
 ---
 
-## ⚙️ Technologies Used
+## Table of Contents
 
-This project was conducted in a Python environment, primarily using a Jupyter Notebook. The following libraries were essential for the analysis and visualization:
-
--   **Pandas:** For data manipulation and cleaning.
--   **NumPy:** For numerical operations.
--   **Matplotlib & Seaborn:** For creating static charts and graphs.
--   **Plotly:** For interactive geographical maps and hierarchical visualizations.
--   **Jupyter Notebook:** As the primary environment for analysis and documentation.
-
----
-
-## 📈 Analysis Steps
-
-The project followed a structured approach to ensure a comprehensive analysis:
-
-1.  **Data Cleaning & Preprocessing:**
-    -   Loaded the dataset and handled missing values (e.g., Postal Codes).
-    -   Ensured data types were correct for accurate analysis (e.g., converting 'Order Date' to datetime objects).
-    -   Checked for and confirmed the absence of duplicate entries.
-
-2.  **Exploratory Data Analysis (EDA):**
-    -   **Customer Segmentation:** Analyzed the distribution of customers across different segments (Consumer, Corporate, Home Office) and their contribution to total sales.
-    -   **Shipping Mode Analysis:** Investigated the popularity of different shipping methods.
-    -   **Geographical Analysis:** Visualized sales data across states and cities to identify top-performing locations using choropleth maps.
-    -   **Product Analysis:** Broke down sales by category and sub-category to find the most and least popular products.
-    -   **Time Series Analysis:** Analyzed sales trends on a yearly, quarterly, and monthly basis to identify seasonality and growth patterns.
-
-3.  **Visualization:**
-    -   Created a variety of plots including pie charts, bar graphs, and interactive maps to present the findings in a clear and visually appealing manner.
+- [Project Purpose](#-project-purpose)
+- [Key Findings](#-key-findings)
+- [Interactive Dashboard](#-interactive-dashboard)
+- [Repository Structure](#-repository-structure)
+- [Tech Stack](#️-tech-stack)
+- [How to Run](#-how-to-run)
+- [Data & Methodology](#-data--methodology)
+- [Further Improvements](#-further-improvements)
 
 ---
 
-## 💡 Key Insights & Visualizations
+## 📌 Project Purpose
 
-The analysis revealed several key insights, including:
+Most public "Superstore" EDA projects stop at *"which category sells the most?"*. This one goes a step further and asks the questions a business stakeholder actually needs answered:
 
-* **Top Performing States:** California and New York are the dominant states in terms of both customer numbers and total sales.
-* **Most Valuable Product Category:** Technology is the highest-grossing category, with Phones and Chairs being the top-selling sub-categories.
-* **Customer Behavior:** The "Consumer" segment accounts for the majority of customers and sales volume.
-* **Sales Trend:** Sales show a significant upward trend towards the end of the year, particularly in the fourth quarter.
-
-*(This section can be expanded with images of the charts from your notebook, like the Sales by State map or the Product Category pie chart.)*
+- Which customer segments and individuals generate the most **revenue and lifetime value** — not just the most orders?
+- Which product categories are **genuinely profitable**, and which are quietly losing money?
+- Does **discounting help or hurt** the bottom line, and at what threshold does it flip?
+- Which regions look strong on sales but are **actually unprofitable**?
+- How has the business trended year over year, and what's the seasonal pattern?
 
 ---
 
-## 🚀 How to Use
+## 💡 Key Findings
 
-To run this analysis yourself:
-1.  Clone the repository:
-    ```bash
-    git clone [https://github.com/your-username/SuperStore-Data-Analysis.git](https://github.com/your-username/SuperStore-Data-Analysis.git)
-    ```
-2.  Navigate to the project directory:
-    ```bash
-    cd SuperStore-Data-Analysis
-    ```
-3.  Open the `SuperStore Data Analysis Project.ipynb` file in a Jupyter environment (like Jupyter Notebook, JupyterLab, or Google Colab).
-4.  Ensure you have the required libraries installed (`pandas`, `numpy`, `matplotlib`, `seaborn`, `plotly`).
-5.  Run the cells in the notebook to reproduce the analysis.
+| Metric | Value |
+|---|---|
+| Total Sales | **$2.26M** |
+| Total Profit | **$278,979** |
+| Overall Profit Margin | **12.3%** |
+| Orders / Unique Customers | **4,922 / 793** |
+| Repeat Customer Rate | **98.4%** |
+
+**1. Furniture is a volume trap.** It's the #2 category by revenue but dead last by profit — Tables (-9.0% margin) and Bookcases (-3.0% margin) are outright loss-making.
+
+![Profit by Sub-Category](assets/images/06_subcategory_profit.png)
+
+**2. Discounts above ~20% destroy profit.** Average profit per order goes negative once discount exceeds 0.2, and the 30-50% band loses ~$157 per order on average.
+
+![Discount vs Profit](assets/images/07_discount_vs_profit.png)
+
+**3. Texas, Ohio, Pennsylvania and Illinois are profitability blind spots** — all top-10 states by sales, all net-negative on profit.
+
+![Top States by Sales](assets/images/05_top_states_sales.png)
+
+**4. Growth resumed strongly after a 2016 dip:** sales fell 4.3% in 2016, then grew 30.6% (2017) and 20.3% (2018).
+
+![Yearly Sales](assets/images/08_yearly_sales.png)
+
+**5. Customer segmentation & CLTV:** Consumers are the largest segment by headcount and revenue, but Corporate customers carry the highest average lifetime value per customer.
+
+![Segment Overview](assets/images/01_segment_overview.png)
+
+Full workings, RFM customer tiering, shipping-mode analysis, and the discount/geography/time-series breakdowns are in the [notebook](notebooks/SuperStore_Sales_Analysis.ipynb).
+
+---
+
+## 🖥️ Interactive Dashboard
+
+A Streamlit dashboard lets you filter by date range, segment, category and region, with live KPIs, profitability breakdowns, a US profit/sales choropleth, and time-trend charts.
+
+```bash
+streamlit run dashboard/app.py
+```
+
+*(To deploy publicly and get a shareable link: push this repo to GitHub, then deploy for free at [share.streamlit.io](https://share.streamlit.io) pointing at `dashboard/app.py`. Add the live link here once deployed.)*
+
+---
+
+## 📁 Repository Structure
+
+```
+.
+├── data/
+│   ├── superstore_sales.csv       # cleaned, enriched dataset
+│   └── README.md                  # data dictionary + enrichment methodology
+├── notebooks/
+│   └── SuperStore_Sales_Analysis.ipynb
+├── scripts/
+│   └── run_analysis.py            # reusable script: cleans data, computes metrics, saves charts
+├── dashboard/
+│   └── app.py                     # Streamlit dashboard
+├── reports/
+│   ├── metrics.json               # all computed KPIs, machine-readable
+│   ├── rfm_customer_segments.csv  # per-customer RFM scores/tiers
+│   ├── subcategory_profitability.csv
+│   └── Executive_Summary.pdf      # one-page recruiter-friendly summary
+├── assets/images/                 # chart exports used in this README
+├── requirements.txt
+└── LICENSE
+```
+
+---
+
+## ⚙️ Tech Stack
+
+- **Python** (Pandas, NumPy) — data cleaning and analysis
+- **Matplotlib / Seaborn** — static charts
+- **Plotly** — interactive choropleth, sunburst and treemap visualizations
+- **Streamlit** — interactive dashboard
+- **Jupyter Notebook** — primary analysis narrative
+
+---
+
+## 🚀 How to Run
+
+```bash
+git clone https://github.com/SubhranshuPan/Super-Store-Data-Analysis-Project.git
+cd Super-Store-Data-Analysis-Project
+python -m venv .venv && source .venv/bin/activate   # optional but recommended
+pip install -r requirements.txt
+
+# Reproduce all metrics + chart images
+python scripts/run_analysis.py
+
+# Explore the full narrative notebook
+jupyter notebook notebooks/SuperStore_Sales_Analysis.ipynb
+
+# Launch the interactive dashboard
+streamlit run dashboard/app.py
+```
+
+---
+
+## 🗂️ Data & Methodology
+
+The base dataset ships with order, customer, product and geography attributes plus `Sales`, but not `Profit`, `Discount` or `Quantity`. Those three fields were sourced from the public "Sample – Superstore" reference dataset and merged in on `Row ID`, after verifying an exact match on `Product ID`/`Customer Name`/`Sales` for every row. Full details in [`data/README.md`](data/README.md).
+
+---
+
+## 🔭 Further Improvements
+
+- [ ] Deploy the dashboard to Streamlit Community Cloud and link it here
+- [ ] Add a lightweight sales-forecasting model (e.g. Prophet or SARIMA) on top of the monthly trend
+- [ ] Add automated tests for the cleaning/aggregation functions in `scripts/run_analysis.py`
+- [ ] Add a GitHub Actions workflow to re-run `scripts/run_analysis.py` and lint on every push
+- [ ] Package the dataset load/clean logic as an importable module rather than duplicated notebook/script code
+
+---
+
+## 📬 Contact
+
+**Subhranshu Panda** — [GitHub](https://github.com/SubhranshuPan) · open to Data Analyst / Data Science part-time and internship roles.
