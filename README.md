@@ -5,6 +5,8 @@
 [![Streamlit](https://img.shields.io/badge/Streamlit-Dashboard-FF4B4B?logo=streamlit&logoColor=white)](https://streamlit.io/)
 [![Plotly](https://img.shields.io/badge/Plotly-Interactive%20Viz-3F4F75?logo=plotly&logoColor=white)](https://plotly.com/)
 [![CI](https://github.com/SubhranshuPan/Super-Store-Data-Analysis-Project/actions/workflows/ci.yml/badge.svg)](https://github.com/SubhranshuPan/Super-Store-Data-Analysis-Project/actions/workflows/ci.yml)
+[![Release](https://img.shields.io/github/v/release/SubhranshuPan/Super-Store-Data-Analysis-Project)](https://github.com/SubhranshuPan/Super-Store-Data-Analysis-Project/releases)
+[![Docker Image](https://img.shields.io/badge/ghcr.io-dashboard-2496ED?logo=docker&logoColor=white)](https://github.com/SubhranshuPan/Super-Store-Data-Analysis-Project/pkgs/container/super-store-data-analysis-project)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 An end-to-end exploratory data analysis of ~9,800 orders from a US retail superstore (2015–2018), going beyond a revenue-only view to find where the business is actually **profitable** — and where it isn't. Includes a Jupyter notebook, a reusable analysis script, and a live interactive Streamlit dashboard.
@@ -81,7 +83,15 @@ A Streamlit dashboard lets you filter by date range, segment, category and regio
 streamlit run dashboard/app.py
 ```
 
-*(To deploy publicly and get a shareable link: push this repo to GitHub, then deploy for free at [share.streamlit.io](https://share.streamlit.io) pointing at `dashboard/app.py`. Add the live link here once deployed.)*
+Or run it as a container, no local Python setup needed:
+
+```bash
+docker run -p 8501:8501 ghcr.io/subhranshupan/super-store-data-analysis-project:latest
+```
+
+*(Published automatically by `.github/workflows/release.yml` on every version tag - see [Packages](https://github.com/SubhranshuPan/Super-Store-Data-Analysis-Project/pkgs/container/super-store-data-analysis-project).)*
+
+**Live demo:** deployed for free on [Streamlit Community Cloud](https://share.streamlit.io) - link added here once deployed (see the Deployment step in Further Improvements below).
 
 ---
 
@@ -90,7 +100,8 @@ streamlit run dashboard/app.py
 ```
 .
 ├── .github/workflows/
-│   └── ci.yml                     # lint + test + smoke-run on every push/PR
+│   ├── ci.yml                     # lint + test + smoke-run on every push/PR
+│   └── release.yml                # on version tag: publish wheel/sdist + Docker image
 ├── .streamlit/
 │   └── config.toml                # dashboard theme, used on Streamlit Cloud too
 ├── superstore/                    # shared package - single source of truth
@@ -113,9 +124,11 @@ streamlit run dashboard/app.py
 │   ├── subcategory_profitability.csv
 │   └── Executive_Summary.pdf      # one-page recruiter-friendly summary
 ├── assets/images/                 # chart exports used in this README
+├── Dockerfile / .dockerignore     # containerized dashboard, published to GHCR on release
+├── CHANGELOG.md
 ├── requirements.txt
-├── requirements-dev.txt           # + pytest, ruff
-├── pyproject.toml                 # pytest/ruff config
+├── requirements-dev.txt           # + pytest, ruff, build
+├── pyproject.toml                 # packaging + pytest/ruff config
 └── LICENSE
 ```
 
@@ -130,7 +143,8 @@ streamlit run dashboard/app.py
 - **Streamlit** — interactive dashboard
 - **Jupyter Notebook** — primary analysis narrative
 - **pytest + ruff** — automated tests and linting
-- **GitHub Actions** — CI on every push/PR
+- **GitHub Actions** — CI on every push/PR, releases (PyPI-style package + Docker image) on every version tag
+- **Docker / GitHub Container Registry (GHCR)** — the dashboard ships as a container
 
 ---
 
@@ -170,7 +184,8 @@ The base dataset ships with order, customer, product and geography attributes pl
 - [x] **Automated tests:** `tests/` (pytest) covers the cleaning and forecasting logic in `superstore/` — 9 tests, run with `pytest`.
 - [x] **CI:** `.github/workflows/ci.yml` lints with ruff, runs the test suite, and smoke-runs `scripts/run_analysis.py` on every push/PR to `main`.
 - [x] **Shared module:** cleaning/loading logic lives once in `superstore/data.py` and is imported by the notebook, `scripts/run_analysis.py`, and `dashboard/app.py` — no more duplicated logic across the three.
-- [ ] **Deploy the dashboard publicly:** the app and `.streamlit/config.toml` theme are ready to go — once this repo is pushed to GitHub, deploy for free at [share.streamlit.io](https://share.streamlit.io), pointing at `dashboard/app.py` on the `main` branch, and add the live link at the top of this README. This is the one step that needs a GitHub push + a Streamlit account, so it's left for you to click through.
+- [x] **Packaging & releases:** `superstore` builds as an installable wheel/sdist (`pyproject.toml`), and `.github/workflows/release.yml` publishes both the Python package (attached to the GitHub Release) and a Docker image of the dashboard (to GHCR, under this repo's **Packages** tab) on every `vX.Y.Z` tag. See [`CHANGELOG.md`](CHANGELOG.md) for the v1.0.0 notes.
+- [ ] **Deploy the dashboard publicly:** the app, Docker image and `.streamlit/config.toml` theme are all ready — once this repo is pushed to GitHub, deploy for free at [share.streamlit.io](https://share.streamlit.io) pointing at `dashboard/app.py` on `main`, and add the live link at the top of this README. This is the one step that needs a GitHub push + your own Streamlit account, so it's left for you to click through.
 
 ---
 
