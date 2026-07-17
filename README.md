@@ -11,7 +11,7 @@
 
 An end-to-end exploratory data analysis of ~9,800 orders from a US retail superstore (2015–2018), going beyond a revenue-only view to find where the business is actually **profitable** — and where it isn't. Includes a Jupyter notebook, a reusable analysis script, and a live interactive Streamlit dashboard.
 
-**[▶ Live dashboard](#-interactive-dashboard)** &nbsp;•&nbsp; **[📓 Notebook](notebooks/SuperStore_Sales_Analysis.ipynb)** &nbsp;•&nbsp; **[📄 One-page summary](reports/Executive_Summary.pdf)**
+**[▶ Live dashboard](https://superstoreanalysiscustomer.streamlit.app/)** &nbsp;•&nbsp; **[📓 Notebook](notebooks/SuperStore_Sales_Analysis.ipynb)** &nbsp;•&nbsp; **[📄 One-page summary](reports/Executive_Summary.pdf)**
 
 ---
 
@@ -185,7 +185,7 @@ The base dataset ships with order, customer, product and geography attributes pl
 - [x] **CI:** `.github/workflows/ci.yml` lints with ruff, runs the test suite, and smoke-runs `scripts/run_analysis.py` on every push/PR to `main`.
 - [x] **Shared module:** cleaning/loading logic lives once in `superstore/data.py` and is imported by the notebook, `scripts/run_analysis.py`, and `dashboard/app.py` — no more duplicated logic across the three.
 - [x] **Packaging & releases:** `superstore` builds as an installable wheel/sdist (`pyproject.toml`), and `.github/workflows/release.yml` publishes both the Python package (attached to the GitHub Release) and a Docker image of the dashboard (to GHCR, under this repo's **Packages** tab) on every `vX.Y.Z` tag. See [`CHANGELOG.md`](CHANGELOG.md) for the v1.0.0 notes.
-- [ ] **Deploy the dashboard publicly:** the app, Docker image and `.streamlit/config.toml` theme are all ready — once this repo is pushed to GitHub, deploy for free at [share.streamlit.io](https://share.streamlit.io) pointing at `dashboard/app.py` on `main`, and add the live link at the top of this README. This is the one step that needs a GitHub push + your own Streamlit account, so it's left for you to click through.
+- [x] **Deploy the dashboard publicly:** the app, Docker image and `.streamlit/config.toml` theme are all ready — once this repo is pushed to GitHub, deploy for free at [share.streamlit.io](https://share.streamlit.io) pointing at `dashboard/app.py` on `main`, and add the live link at the top of this README. This is the one step that needs a GitHub push + your own Streamlit account, so it's left for you to click through.
 
 ---
 
