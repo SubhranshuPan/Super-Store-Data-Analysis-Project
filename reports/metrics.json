@@ -1,0 +1,149 @@
+{
+  "n_rows": 9800,
+  "n_duplicates_removed": 0,
+  "segment_customer_share": {
+    "Consumer": 5101,
+    "Corporate": 2953,
+    "Home Office": 1746
+  },
+  "segment_sales": {
+    "Consumer": 1148060.53,
+    "Corporate": 688494.07,
+    "Home Office": 424982.18
+  },
+  "segment_profit": {
+    "Consumer": 131123.11,
+    "Corporate": 88117.41,
+    "Home Office": 59738.09
+  },
+  "avg_cltv_by_segment": {
+    "Corporate": 2917.35,
+    "Home Office": 2871.5,
+    "Consumer": 2806.99
+  },
+  "rfm_tier_counts": {
+    "Loyal Customers": 212,
+    "Champions": 201,
+    "Potential Loyalists": 183,
+    "At Risk": 140,
+    "Lost / Dormant": 57
+  },
+  "repeat_customer_rate": 0.9836,
+  "top_10_customers_by_sales": {
+    "Sean Miller": 25043.05,
+    "Tamara Chand": 19052.22,
+    "Raymond Buch": 15117.34,
+    "Tom Ashbrook": 14595.62,
+    "Adrian Barton": 14473.57,
+    "Ken Lonsdale": 14175.23,
+    "Sanjit Chand": 14142.33,
+    "Hunter Lopez": 12873.3,
+    "Sanjit Engle": 12209.44,
+    "Christopher Conant": 12129.07
+  },
+  "ship_mode_share": {
+    "Standard Class": 5859,
+    "Second Class": 1902,
+    "First Class": 1501,
+    "Same Day": 538
+  },
+  "avg_fulfillment_days_by_mode": {
+    "First Class": 2.2,
+    "Same Day": 0.0,
+    "Second Class": 3.2,
+    "Standard Class": 5.0
+  },
+  "top_10_states_by_sales": {
+    "California": 446306.46,
+    "New York": 306361.15,
+    "Texas": 168572.53,
+    "Washington": 135206.85,
+    "Pennsylvania": 116276.65,
+    "Florida": 88436.53,
+    "Illinois": 79236.52,
+    "Michigan": 76136.07,
+    "Ohio": 75130.35,
+    "Virginia": 70636.72
+  },
+  "least_profitable_states": {
+    "Texas": -25620.82,
+    "Ohio": -17025.23,
+    "Pennsylvania": -15602.98,
+    "Illinois": -12703.23,
+    "North Carolina": -7518.24
+  },
+  "category_sales": {
+    "Technology": 827455.87,
+    "Furniture": 728658.58,
+    "Office Supplies": 705422.33
+  },
+  "category_profit": {
+    "Technology": 143100.54,
+    "Office Supplies": 118956.39,
+    "Furniture": 16921.68
+  },
+  "loss_making_subcategories": [
+    {
+      "Sub-Category": "Tables",
+      "Sales": 202810.63,
+      "Profit": -18223.93,
+      "Profit Margin %": -9.0
+    },
+    {
+      "Sub-Category": "Bookcases",
+      "Sales": 113813.2,
+      "Profit": -3364.69,
+      "Profit Margin %": -3.0
+    },
+    {
+      "Sub-Category": "Supplies",
+      "Sales": 46420.31,
+      "Profit": -1258.94,
+      "Profit Margin %": -2.7
+    }
+  ],
+  "avg_profit_by_discount_band": {
+    "(-0.01, 0.0]": 67.32,
+    "(0.0, 0.1]": 96.4,
+    "(0.1, 0.2]": 24.45,
+    "(0.2, 0.3]": -45.25,
+    "(0.3, 0.5]": -157.49,
+    "(0.5, 1.0]": -90.6
+  },
+  "yearly_sales": {
+    "2015": 479856.21,
+    "2016": 459436.01,
+    "2017": 600192.55,
+    "2018": 722052.02
+  },
+  "yoy_growth_pct": {
+    "2015": null,
+    "2016": -4.3,
+    "2017": 30.6,
+    "2018": 20.3
+  },
+  "avg_sales_by_calendar_month": {
+    "1": 257.63,
+    "2": 199.9,
+    "3": 290.55,
+    "4": 207.43,
+    "5": 212.53,
+    "6": 211.05,
+    "7": 208.8,
+    "8": 227.01,
+    "9": 221.64,
+    "10": 246.6,
+    "11": 241.66,
+    "12": 232.62
+  },
+  "total_sales": 2261536.78,
+  "total_profit": 278978.61,
+  "overall_profit_margin_pct": 12.34,
+  "total_orders": 4922,
+  "total_customers": 793,
+  "avg_order_value": 459.48,
+  "date_range": [
+    "2015-01-03",
+    "2018-12-30"
+  ]
+}
