@@ -3,6 +3,7 @@ numpy>=1.26
 matplotlib>=3.8
 seaborn>=0.13
 plotly>=5.22
+statsmodels>=0.14
 streamlit>=1.38
 jupyter>=1.0
 nbconvert>=7.16
