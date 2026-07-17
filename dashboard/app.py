@@ -3,24 +3,25 @@ SuperStore Sales & Profitability Dashboard
 Run with: streamlit run dashboard/app.py
 """
 import os
+import sys
 
 import pandas as pd
 import plotly.express as px
+import plotly.graph_objects as go
 import streamlit as st
 
-st.set_page_config(page_title="SuperStore Sales Dashboard", layout="wide", page_icon="📊")
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+sys.path.insert(0, BASE_DIR)
+from superstore import forecast_monthly_sales, load_and_clean  # noqa: E402
 
-DATA_PATH = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "data", "superstore_sales.csv")
+st.set_page_config(page_title="SuperStore Sales Dashboard", layout="wide", page_icon="📊")
 
 
 @st.cache_data
 def load_data():
-    df = pd.read_csv(DATA_PATH)
-    df["Postal Code"] = df["Postal Code"].fillna(0).astype(int)
-    df["Order Date"] = pd.to_datetime(df["Order Date"], dayfirst=True)
-    df["Ship Date"] = pd.to_datetime(df["Ship Date"], dayfirst=True)
-    df = df.drop_duplicates()
-    return df
+    # Shared cleaning logic (superstore/data.py) - same rules used by the
+    # notebook and scripts/run_analysis.py, so all three stay in sync.
+    return load_and_clean()
 
 
 df = load_data()
@@ -76,7 +77,9 @@ c5.metric("Avg. Order Value", f"${aov:,.0f}")
 
 st.divider()
 
-tab1, tab2, tab3, tab4 = st.tabs(["Customers", "Products & Profitability", "Geography", "Time Trends"])
+tab1, tab2, tab3, tab4, tab5 = st.tabs(
+    ["Customers", "Products & Profitability", "Geography", "Time Trends", "Forecast"]
+)
 
 # ---------------------------------------------------------------- Customers
 with tab1:
@@ -174,6 +177,40 @@ with tab4:
     seasonality = seasonality.reindex(month_order)
     fig = px.bar(seasonality.reset_index(), x="Order Date", y="Sales", title="Avg Sales by Month")
     st.plotly_chart(fig, use_container_width=True)
+
+# ---------------------------------------------------------------- Forecast
+with tab5:
+    st.subheader("Sales Forecast")
+    st.caption(
+        "SARIMA model (seasonal ARIMA) trained on the full monthly sales history, forecasting "
+        "forward. Filters above don't apply here since a forecast needs the complete, unfiltered "
+        "time series to estimate seasonality reliably."
+    )
+    horizon = st.slider("Months to forecast", min_value=3, max_value=12, value=6)
+    with st.spinner("Fitting SARIMA model..."):
+        forecast_df = forecast_monthly_sales(df, periods=horizon)
+
+    hist = forecast_df.dropna(subset=["Sales"])
+    fut = forecast_df[forecast_df["Sales"].isna()]
+
+    fig = go.Figure()
+    fig.add_trace(go.Scatter(x=hist.index, y=hist["Sales"], mode="lines+markers", name="Actual"))
+    fig.add_trace(go.Scatter(x=forecast_df.index, y=forecast_df["Forecast"], mode="lines",
+                              line=dict(dash="dash", color="firebrick"), name="Forecast"))
+    if "Lower CI" in fut.columns:
+        fig.add_trace(go.Scatter(x=fut.index, y=fut["Upper CI"], mode="lines",
+                                  line=dict(width=0), showlegend=False, hoverinfo="skip"))
+        fig.add_trace(go.Scatter(x=fut.index, y=fut["Lower CI"], mode="lines",
+                                  line=dict(width=0), fill="tonexty",
+                                  fillcolor="rgba(214,39,40,0.15)", name="80% CI"))
+    fig.update_layout(title=f"Monthly Sales: Actual + {horizon}-Month Forecast", yaxis_tickformat=",.0f")
+    st.plotly_chart(fig, use_container_width=True)
+
+    st.subheader(f"Forecast table (next {horizon} months)")
+    st.dataframe(
+        fut[["Forecast", "Lower CI", "Upper CI"]].round(0).rename_axis("Month").reset_index(),
+        hide_index=True, use_container_width=True,
+    )
 
 st.divider()
 st.caption(

@@ -7,18 +7,23 @@ Run: python scripts/run_analysis.py
 """
 import json
 import os
+import sys
 
 import matplotlib
+
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import matplotlib.ticker as mticker
 import pandas as pd
 import seaborn as sns
 
+BASE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+sys.path.insert(0, BASE)
+from superstore import clean_data, forecast_monthly_sales, load_data  # noqa: E402
+
 sns.set_theme(style="whitegrid")
 PALETTE = "viridis"
 
-BASE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DATA_PATH = os.path.join(BASE, "data", "superstore_sales.csv")
 IMG_DIR = os.path.join(BASE, "assets", "images")
 METRICS_PATH = os.path.join(BASE, "reports", "metrics.json")
@@ -31,13 +36,11 @@ def money(ax_or_fmt="{x:,.0f}"):
 
 
 def load_and_clean():
-    df = pd.read_csv(DATA_PATH)
-    df["Postal Code"] = df["Postal Code"].fillna(0).astype(int)
-    df["Order Date"] = pd.to_datetime(df["Order Date"], dayfirst=True)
-    df["Ship Date"] = pd.to_datetime(df["Ship Date"], dayfirst=True)
-    df["Order to Ship Days"] = (df["Ship Date"] - df["Order Date"]).dt.days
-    dupes = int(df.duplicated().sum())
-    df = df.drop_duplicates()
+    """Load + clean via the shared superstore package (single source of truth
+    for cleaning rules - also used by dashboard/app.py and the notebook)."""
+    raw = load_data(DATA_PATH)
+    dupes = int(raw.duplicated().sum())
+    df = clean_data(raw)
     return df, dupes
 
 
@@ -225,6 +228,29 @@ def main():
 
     monthly_seasonality = df.groupby(df["Order Date"].dt.month)["Sales"].mean()
     metrics["avg_sales_by_calendar_month"] = {int(k): round(v, 2) for k, v in monthly_seasonality.items()}
+
+    # ---- Forecast ----
+    forecast_df = forecast_monthly_sales(df, periods=6)
+    metrics["forecast_next_6_months"] = {
+        str(idx.date()): round(val, 2)
+        for idx, val in forecast_df["Forecast"].tail(6).items()
+    }
+
+    fig, ax = plt.subplots(figsize=(9, 4.5))
+    hist = forecast_df.dropna(subset=["Sales"])
+    fut = forecast_df[forecast_df["Sales"].isna()]
+    ax.plot(hist.index, hist["Sales"], marker="o", markersize=3, linewidth=1.5,
+            color=sns.color_palette(PALETTE, 1)[0], label="Actual")
+    ax.plot(forecast_df.index, forecast_df["Forecast"], linestyle="--", linewidth=1.5,
+            color="#d62728", label="Forecast")
+    if "Lower CI" in fut.columns:
+        ax.fill_between(fut.index, fut["Lower CI"], fut["Upper CI"], color="#d62728", alpha=0.15,
+                         label="80% CI")
+    ax.set_title("Monthly Sales: Actual + 6-Month SARIMA Forecast")
+    ax.yaxis.set_major_formatter(money())
+    ax.legend()
+    fig.tight_layout()
+    save(fig, "10_sales_forecast.png")
 
     # ---- Headline KPIs ----
     metrics["total_sales"] = round(float(df["Sales"].sum()), 2)
